@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HTML5 Canvas</title>
+</head>
+<body>
+<canvas id="draw" width="800" height="800"></canvas>
+<script>
+	const canvas = document.querySelector('#draw');
+	const ctx = canvas.getContext('2d'); 
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
+	ctx.strokeStyle = "#BADASS";
+	ctx.lineJoin = 'round';
+	ctx.lineCap = 'round';
+	ctx.lineWidth = 50;
+
+	let isDrawing = false; // tis is set bec wen key press it shld true and vise versa
+	let lastX = 0;
+	let lastY = 0;
+	let hue = 0;	
+	let direction = true;
+
+	function draw(e){
+		if(!isDrawing) return; // stop the func from running when they are not mousedown
+		console.log(e);
+		ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`; // mother-effing hsl
+		// ctx.lineWidth = hue;
+		ctx.beginPath();
+		// start from
+		ctx.moveTo(lastX, lastY);
+		// go to
+		ctx.lineTo(e.offsetX, e.offsetY); // offsetX and Y from event happened from cl.
+		ctx.stroke(); // untill v call stroke v can't see anything on page
+		lastX = e.offsetX;
+		lastY = e.offsetY;
+
+		hue++;
+		if(hue >= 360){
+			hue = 0;
+		}
+		if(ctx.lineWidth >= 80 || ctx.lineWidth <= 1){
+			direction = !direction;
+		}
+		// depend on the direction v ll inc or dec the line width.
+		if(direction){
+			ctx.lineWidth++;
+		} else {
+			ctx.lineWidth--;
+		}
+	}
+	canvas.addEventListener('mousedown', (e) => {
+		isDrawing = true;
+		[lastX, lastY] = [e.offsetX, e.offsetY];
+	});
+	canvas.addEventListener('mousemove', draw);
+	canvas.addEventListener('mouseup', () => isDrawing = false);
+	canvas.addEventListener('mouseout', () => isDrawing = false);
+</script>
+
+<style>
+  html, body {
+    margin: 0;
+  }
+</style>
+
+</body>
+</html>
